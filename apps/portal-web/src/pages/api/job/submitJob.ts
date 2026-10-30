@@ -140,7 +140,10 @@ export default route(SubmitJobSchema, async (req, res) => {
       return { 201: { jobId } } as const;
     })
     .catch(handlegRPCError({
-      [status.INTERNAL]: (err) => ({ 500: { code: "SCHEDULER_FAILED", message: err.details } } as const),
+      [status.INVALID_ARGUMENT]: (err) => ({ 400: { message: err.details } } as const),
+      [status.INTERNAL]: (err) => /QOS.*Limit|violates accounting\/QOS policy/i.test(err.details)
+        ? { 400: { message: "申请资源超出账户额度，请减少 CPU、内存、运行时间或并发作业数后重试。" } } as const
+        : { 500: { code: "SCHEDULER_FAILED", message: err.details } } as const,
       [status.NOT_FOUND]: (err) => ({ 404: { code: "NOT_FOUND", message: err.details } } as const),
       [status.ALREADY_EXISTS]: (err) => ({ 409: { code: "ALREADY_EXISTS", message: err.details } } as const),
     },

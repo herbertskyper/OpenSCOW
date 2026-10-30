@@ -457,6 +457,17 @@ it("returns payment records", async () => {
   ] as Partial<PaymentRecord>);
 
   expect(reply6.total).toStrictEqual(numberToMoney(40));
+
+  const singleAccount = await asyncClientCall(client, "getPaymentRecords", {
+    startTime: startTime.toISOString(), endTime,
+    types: extractTypesFromObjects([request1, request3]),
+    target: { $case: "accountOfTenant", accountOfTenant: {
+      tenantName: account.tenant.getProperty("name"), accountName: account.accountName,
+    } },
+  });
+  expect(singleAccount.results).toHaveLength(1);
+  expect(singleAccount.results[0].accountName).toBe(account.accountName);
+  expect(singleAccount.total).toStrictEqual(numberToMoney(10));
 });
 
 it("returns charge records with query of accountOfTenant", async () => {

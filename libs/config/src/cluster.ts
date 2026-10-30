@@ -105,6 +105,14 @@ export const ClusterConfigSchema = Type.Object({
   displayName: createI18nStringSchema({ description: "集群的显示名称" }),
   priority: Type.Number({ description: "集群使用的优先级, 数字越小越先展示", default: Number.MAX_SAFE_INTEGER }),
   adapterUrl: Type.String({ description: "调度器适配器服务地址" }),
+  jobPolicies: Type.Optional(Type.Array(Type.Object({
+    accountPrefix: Type.String({ minLength: 1 }),
+    partition: Type.String({ minLength: 1 }),
+    qos: Type.String({ minLength: 1 }),
+    maxCpus: Type.Integer({ minimum: 1 }),
+    maxMemoryMb: Type.Integer({ minimum: 1 }),
+    maxTimeMinutes: Type.Integer({ minimum: 1 }),
+  }), { description: "按账户前缀限制自助计算资源，调度器同时保留账户和 QOS 校验" })),
   proxyGateway: Type.Optional(Type.Object({
     url: Type.String({ description: "代理网关节点监听URL" }),
     autoSetupNginx: Type.Boolean({ description: "是否自动配置nginx", default: false }),

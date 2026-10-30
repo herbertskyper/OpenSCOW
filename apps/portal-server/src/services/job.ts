@@ -25,6 +25,7 @@ import { getClusterOps } from "src/clusterops";
 import { JobTemplate } from "src/clusterops/api/job";
 import { callOnOne, checkActivatedClusters } from "src/utils/clusters";
 import { clusterNotFound } from "src/utils/errors";
+import { validateJobPolicy } from "src/utils/jobPolicy";
 import { getClusterLoginNode, sshConnect } from "src/utils/ssh";
 
 export const jobServiceServer = plugin((server) => {
@@ -232,6 +233,13 @@ export const jobServiceServer = plugin((server) => {
         saveAsTemplate, userId, nodeCount, partition, qos, account, comment, workingDirectory, output
         , errorOutput, memory, scriptOutput } = request;
       await checkActivatedClusters({ clusterIds: cluster });
+      const timeUnitConversion = {
+        [TimeUnit.MINUTES]: 1,
+        [TimeUnit.HOURS]: 60,
+        [TimeUnit.DAYS]: 60 * 24,
+      };
+      const maxTimeConversion = maxTime * timeUnitConversion[maxTimeUnit];
+      validateJobPolicy(cluster, request, maxTimeConversion);
 
       // 检查作业名是否重复
       await callOnOne(
@@ -249,12 +257,6 @@ export const jobServiceServer = plugin((server) => {
         const sftp = await ssh.requestSFTP();
         await createDirectoriesRecursively(sftp, workingDirectory);
       });
-      const timeUnitConversion = {
-        [TimeUnit.MINUTES]: 1,
-        [TimeUnit.HOURS]: 60,
-        [TimeUnit.DAYS]: 60 * 24,
-      };
-      const maxTimeConversion = maxTime * (timeUnitConversion[maxTimeUnit]);
       const reply = await callOnOne(
         cluster,
         logger,

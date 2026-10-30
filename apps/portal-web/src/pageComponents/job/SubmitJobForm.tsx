@@ -105,13 +105,16 @@ export const SubmitJobForm: React.FC<Props> = ({ initial = initialValues, submit
     await api.submitJob({
       body: {
         cluster: cluster.id, command, jobName, account,
-        coreCount: gpuCount ? gpuCount * Math.floor(currentPartitionInfo!.cores
-          / currentPartitionInfo!.gpus) : coreCount,
-        gpuCount,
+        coreCount: currentPartitionInfo?.gpus && gpuCount ? gpuCount * Math.floor(currentPartitionInfo.cores
+          / currentPartitionInfo.gpus) : coreCount,
+        gpuCount: currentPartitionInfo?.gpus ? gpuCount : 0,
         maxTime, maxTimeUnit, nodeCount, partition, qos, comment,
         workingDirectory, save, memory, output, errorOutput, scriptOutput,
       },
     })
+      .httpError(400, (error) => {
+        modal.error({ title: t(p("errorMessage")), content: error.message });
+      })
       .httpError(500, (e) => {
         if (e.code === "SCHEDULER_FAILED") {
           modal.error({
@@ -142,7 +145,9 @@ export const SubmitJobForm: React.FC<Props> = ({ initial = initialValues, submit
           throw e;
         }
       })
-      .then(({ jobId }) => {
+      .then((result) => {
+        if (!result) { return; }
+        const { jobId } = result;
         message.success(t(p("successMessage")) + jobId);
         Router.push("/jobs/runningJobs");
       })

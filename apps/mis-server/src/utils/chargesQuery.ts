@@ -130,6 +130,9 @@ export const getPaymentsTargetSearchParam = (target:
   const { accountNames, tenantName } = target[target.$case];
   switch (target?.$case)
   {
+    case "accountOfTenant":
+      searchParam = { tenantName, accountName: target.accountOfTenant.accountName };
+      break;
     case "tenant":
       searchParam = { tenantName, accountName:undefined };
       break;

@@ -24,6 +24,7 @@ import { ApiVersion } from "@scow/utils/build/version";
 import { readFileSync } from "fs";
 import { join } from "path";
 import { callOnOne, checkActivatedClusters } from "src/utils/clusters";
+import { getJobPolicy } from "src/utils/jobPolicy";
 
 export const staticConfigServiceServer = plugin((server) => {
   return server.addService<ConfigServiceServer>(ConfigServiceService, {
@@ -64,6 +65,12 @@ export const staticConfigServiceServer = plugin((server) => {
         availablePartitions = [];
       }
 
+      const policy = getJobPolicy(cluster, accountName);
+      if (policy) {
+        availablePartitions = availablePartitions.filter((partition) => partition.name === policy.partition)
+          .map((partition) => ({ ...partition, qos: [policy.qos], nodes: 1, cores: policy.maxCpus,
+            memMb: policy.maxMemoryMb, gpus: 0 }));
+      }
       return [{ partitions: availablePartitions }];
     },
 
