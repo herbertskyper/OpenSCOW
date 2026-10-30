@@ -1,7 +1,9 @@
 jest.mock("src/config/clusters", () => ({
   configClusters: {
     hpc01: { jobPolicies: [{ accountPrefix: "hp_", partition: "trial", qos: "hitper_trial",
-      maxCpus: 2, maxMemoryMb: 4096, maxTimeMinutes: 30 }]},
+      maxCpus: 2, maxMemoryMb: 4096, maxTimeMinutes: 30 },
+    { accountPrefix: "hp_", partition: "trial_gpu", qos: "hitper_gpu",
+      maxCpus: 2, maxMemoryMb: 4096, maxTimeMinutes: 30, maxGpus: 1 }]},
   },
 }));
 
@@ -27,4 +29,15 @@ it.each([
 
 it.each([0, 31, Number.NaN])("rejects invalid or excessive converted runtime %s", (minutes) => {
   expect(() => validateJobPolicy("hpc01", request, minutes)).toThrow(expect.objectContaining({ code: 3 }));
+});
+
+it("selects the GPU partition policy and enforces its GPU boundary", () => {
+  const gpuRequest = { ...request, partition: "trial_gpu", qos: "hitper_gpu", gpuCount: 1 };
+  expect(() => validateJobPolicy("hpc01", gpuRequest, 30)).not.toThrow();
+  for (const gpuCount of [-1, 0.5, 2]) {
+    expect(() => validateJobPolicy("hpc01", { ...gpuRequest, gpuCount }, 30))
+      .toThrow(expect.objectContaining({ code: 3 }));
+  }
+  expect(() => validateJobPolicy("hpc01", { ...gpuRequest, qos: "hitper_trial" }, 30))
+    .toThrow(expect.objectContaining({ code: 3 }));
 });

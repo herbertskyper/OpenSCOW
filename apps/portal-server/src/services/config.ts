@@ -67,9 +67,13 @@ export const staticConfigServiceServer = plugin((server) => {
 
       const policy = getJobPolicy(cluster, accountName);
       if (policy) {
-        availablePartitions = availablePartitions.filter((partition) => partition.name === policy.partition)
-          .map((partition) => ({ ...partition, qos: [policy.qos], nodes: 1, cores: policy.maxCpus,
-            memMb: policy.maxMemoryMb, gpus: 0 }));
+        availablePartitions = availablePartitions
+          .filter((partition) => getJobPolicy(cluster, accountName, partition.name))
+          .map((partition) => {
+            const partitionPolicy = getJobPolicy(cluster, accountName, partition.name)!;
+            return { ...partition, qos: [partitionPolicy.qos], nodes: 1, cores: partitionPolicy.maxCpus,
+              memMb: partitionPolicy.maxMemoryMb, gpus: partitionPolicy.maxGpus ?? 0 };
+          });
       }
       return [{ partitions: availablePartitions }];
     },

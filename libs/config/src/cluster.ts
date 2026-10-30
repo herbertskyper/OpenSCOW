@@ -112,6 +112,7 @@ export const ClusterConfigSchema = Type.Object({
     maxCpus: Type.Integer({ minimum: 1 }),
     maxMemoryMb: Type.Integer({ minimum: 1 }),
     maxTimeMinutes: Type.Integer({ minimum: 1 }),
+    maxGpus: Type.Optional(Type.Integer({ minimum: 0 })),
   }), { description: "按账户前缀限制自助计算资源，调度器同时保留账户和 QOS 校验" })),
   proxyGateway: Type.Optional(Type.Object({
     url: Type.String({ description: "代理网关节点监听URL" }),
