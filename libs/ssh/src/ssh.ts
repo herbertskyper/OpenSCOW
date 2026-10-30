@@ -38,29 +38,37 @@ export class SshConnectError extends Error {
  */
 export async function sshRawConnect(address: string, username: string, rootKeyPair: KeyPair, logger: Logger) {
   const [host, port] = address.split(":");
-  const ssh = new NodeSSH();
-
-  async function connect() {
-    await ssh.connect({ host, port: port ? +port : undefined, username, privateKey: rootKeyPair.privateKey });
-  }
-
-  try {
-    await connect();
-  } catch (e) {
-    if (username === "root") {
-      logger.info("Login to %s as %s failed.", host, username);
-      throw e;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const ssh = new NodeSSH();
+    try {
+      await ssh.connect({
+        host, port: port ? +port : undefined, username, privateKey: rootKeyPair.privateKey,
+        authHandler: ["publickey"],
+        readyTimeout: 15000, keepaliveInterval: 10000, keepaliveCountMax: 2,
+      });
+      return ssh;
+    } catch (error) {
+      ssh.dispose();
+      const failure = error as Error & { level?: string; code?: string };
+      if (attempt === 1) {
+        logger.error(failure, "Login to %s as %s failed after retry", host, username);
+        throw new SshConnectError({ cause: failure.message });
+      }
+      if (failure.level === "client-authentication" && username !== "root") {
+        logger.info("Public key authentication failed for %s on %s. Preparing key", username, host);
+        try {
+          await insertKeyAsRoot(username, address, rootKeyPair, logger);
+        } catch (preparationError) {
+          throw new SshConnectError({ cause: preparationError instanceof Error
+            ? preparationError.message : String(preparationError) });
+        }
+      } else if (failure.level !== "client-timeout"
+          && !["ECONNRESET", "ETIMEDOUT", "ECONNREFUSED", "EPIPE"].includes(failure.code ?? "")) {
+        throw new SshConnectError({ cause: failure.message });
+      }
     }
-
-    logger.info("Login to %s as %s failed. Try inserting public key", host, username);
-    await insertKeyAsRoot(username, address, rootKeyPair, logger);
-    await connect().catch((e) => {
-      logger.error(e, "Login to %s as %s still failed after inserting key", host, username);
-      throw new SshConnectError({ cause: e });
-    });
   }
-
-  return ssh;
+  throw new SshConnectError();
 }
 
 /**
@@ -77,8 +85,11 @@ export async function sshRawConnectByPassword(address: string, username: string,
   const [host, port] = address.split(":");
   const ssh = new NodeSSH();
 
-  await ssh.connect({ host, port: port ? +port : undefined, username, password: password })
+  await ssh.connect({ host, port: port ? +port : undefined, username, password,
+    authHandler: ["password"],
+    readyTimeout: 15000, keepaliveInterval: 10000, keepaliveCountMax: 2 })
     .catch((e) => {
+      ssh.dispose();
       logger.info("Login to %s as %s by password failed.", host, username);
       throw new SshConnectError({ cause: e });
     });
@@ -96,7 +107,7 @@ export async function sshConnect<T>(
   return run(ssh)
     .catch((e) => {
       // 若在run回调函数中有具体抛错，直接抛出
-      if (e.code !== undefined) {
+      if (e instanceof SftpError || e.code !== undefined) {
         throw e;
       }
       else {

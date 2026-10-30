@@ -12,6 +12,7 @@
 
 import { typeboxRouteSchema } from "@ddadaal/next-typed-api-routes-runtime";
 import { asyncReplyStreamCall, asyncUnaryCall } from "@ddadaal/tsgrpc-client";
+import { Metadata } from "@grpc/grpc-js";
 import { FileServiceClient } from "@scow/protos/build/portal/file";
 import { Type } from "@sinclair/typebox";
 import { contentType } from "mime-types";
@@ -78,7 +79,7 @@ export default route(DownloadFileSchema, async (req, res) => {
 
   const reply = await asyncUnaryCall(client, "getFileMetadata", {
     userId: info.identityId, cluster, path,
-  });
+  }, { metadata: new Metadata(), options: { deadline: Date.now() + 45000 } });
 
   res.writeHead(200, download ? {
     "Content-Type": getContentType(filename, "application/octet-stream"),
@@ -100,7 +101,9 @@ export default route(DownloadFileSchema, async (req, res) => {
       return x.chunk;
     },
     res,
-  ).finally(() => {
+  ).catch((error: unknown) => {
+    res.destroy(error instanceof Error ? error : undefined);
+  }).finally(() => {
     res.end();
   });
 });

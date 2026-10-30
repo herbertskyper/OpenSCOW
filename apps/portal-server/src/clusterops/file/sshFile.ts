@@ -135,7 +135,9 @@ export const sshFileServices = (host: string): FileOps => ({
       const stat = await sftpStat(sftp)(path).catch((e) => {
         logger.error(e, "stat %s as %s failed", path, userId);
         throw {
-          code: status.PERMISSION_DENIED, message: `${path} is not accessible`,
+          code: (e.cause as { code?: number } | undefined)?.code === 2
+            ? status.INVALID_ARGUMENT : status.PERMISSION_DENIED,
+          message: `${path} is not accessible`,
         } as ServiceError;
       });
 

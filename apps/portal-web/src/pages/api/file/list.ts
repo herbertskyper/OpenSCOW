@@ -12,9 +12,10 @@
 
 import { typeboxRouteSchema } from "@ddadaal/next-typed-api-routes-runtime";
 import { asyncUnaryCall } from "@ddadaal/tsgrpc-client";
-import { status } from "@grpc/grpc-js";
+import { Metadata, status } from "@grpc/grpc-js";
 import { FileInfo_FileType, FileServiceClient } from "@scow/protos/build/portal/file";
 import { Static, Type } from "@sinclair/typebox";
+import { randomUUID } from "crypto";
 import { authenticate } from "src/auth/server";
 import { getClient } from "src/utils/client";
 import { route } from "src/utils/route";
@@ -50,6 +51,7 @@ export const ListFileSchema = typeboxRouteSchema({
     400: Type.Object({ code: Type.Literal("INVALID_CLUSTER") }),
     403: Type.Object({ code: Type.Literal("NOT_ACCESSIBLE") }),
     412: Type.Object({ code: Type.Literal("DIRECTORY_NOT_FOUND") }),
+    503: Type.Object({ code: Type.Literal("FILE_SERVICE_UNAVAILABLE"), requestId: Type.String() }),
   },
 });
 
@@ -70,15 +72,23 @@ export default route(ListFileSchema, async (req, res) => {
   const { cluster, path, updateAccessTime } = req.query;
 
   const client = getClient(FileServiceClient);
+  const unavailable = (error: Error) => {
+    const requestId = randomUUID();
+    console.error("File list unavailable", { requestId, cluster, userId: info.identityId, error });
+    return { 503: { code: "FILE_SERVICE_UNAVAILABLE", requestId } } as const;
+  };
 
   return asyncUnaryCall(client, "readDirectory", {
     cluster, userId: info.identityId, path, updateAccessTime,
-  }).then(({ results }) => ({ 200: {
+  }, { metadata: new Metadata(), options: { deadline: Date.now() + 45000 } }).then(({ results }) => ({ 200: {
     items: results.map(({ mode, mtime, name, size, type }) => ({
       mode, mtime, name, size, type: mapType[type],
     })) } }), handlegRPCError({
     [status.NOT_FOUND]: () => ({ 400: { code: "INVALID_CLUSTER" as const } }),
     [status.PERMISSION_DENIED]: () => ({ 403: { code: "NOT_ACCESSIBLE" as const } }),
     [status.INVALID_ARGUMENT]: () => ({ 412: { code: "DIRECTORY_NOT_FOUND" as const } }),
+    [status.INTERNAL]: unavailable,
+    [status.UNAVAILABLE]: unavailable,
+    [status.DEADLINE_EXCEEDED]: unavailable,
   }));
 });

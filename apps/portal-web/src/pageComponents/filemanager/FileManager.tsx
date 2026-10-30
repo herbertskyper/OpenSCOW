@@ -18,11 +18,11 @@ import {
 import { DEFAULT_PAGE_SIZE } from "@scow/lib-web/build/utils/pagination";
 import { queryToString } from "@scow/lib-web/build/utils/querystring";
 import { getI18nConfigCurrentText } from "@scow/lib-web/build/utils/systemLanguage";
-import { App, Button, Divider, Space } from "antd";
+import { Alert, App, Button, Divider, Space } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { join } from "path";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useStore } from "simstate";
 import { api } from "src/apis/api";
 import { FilterFormContainer } from "src/components/FilterFormContainer";
@@ -106,10 +106,9 @@ export const FileManager: React.FC<Props> = ({ cluster, path, urlPrefix, scowdEn
 
   const languageId = useI18n().currentLanguage.id;
 
-  const prevPathRef = useRef<string>(path);
-
   const [files, setFiles] = useState<FileInfo[]>([]);
   const [loading, setLoading] = useState(false);
+  const [readError, setReadError] = useState("");
   const [selectedKeys, setSelectedKeys] = useState<FileInfoKey[]>([]);
 
   const [previewFile, setPreviewFile] = useState({
@@ -133,13 +132,24 @@ export const FileManager: React.FC<Props> = ({ cluster, path, urlPrefix, scowdEn
 
   const reload = async (signal?: AbortSignal) => {
     setLoading(true);
-    await api.listFile({ query: { cluster: cluster.id, path } }, signal)
-      .then((d) => {
-        setFiles(d.items);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    setReadError("");
+    try {
+      const response = await api.listFile({ query: { cluster: cluster.id, path } }, signal)
+        .httpError(403, () => { throw new Error(t("pages.files.connection.denied")); })
+        .httpError(412, () => { throw new Error(t("pages.files.connection.missing")); })
+        .httpError(503, ({ requestId }) => {
+          throw new Error(t("pages.files.connection.directoryFailed")
+            + " " + t("pages.files.connection.reference", [requestId]));
+        });
+      setFiles(response.items);
+    } catch (error) {
+      if (signal?.aborted) { return; }
+      setFiles([]);
+      setSelectedKeys([]);
+      setReadError(error instanceof Error ? error.message : t("pages.files.connection.directoryFailed"));
+    } finally {
+      if (!signal?.aborted) { setLoading(false); }
+    }
   };
 
   const fullUrl = (path: string) => join(urlPrefix, cluster.id, path);
@@ -164,13 +174,9 @@ export const FileManager: React.FC<Props> = ({ cluster, path, urlPrefix, scowdEn
 
     setSelectedKeys([]);
 
-    reload()
-      .then(() => { prevPathRef.current = path; })
-      .catch(() => {
-        if (prevPathRef.current !== path) {
-          router.push(fullUrl(prevPathRef.current));
-        }
-      });
+    const controller = new AbortController();
+    void reload(controller.signal);
+    return () => controller.abort();
   }, [path]);
 
   const resetSelectedAndOperation = () => {
@@ -361,6 +367,8 @@ export const FileManager: React.FC<Props> = ({ cluster, path, urlPrefix, scowdEn
           {t(p("tableInfo.title"), [getI18nConfigCurrentText(cluster.name, languageId)])}
         </span>
       </TitleText>
+      {readError && <Alert type="warning" showIcon message={readError}
+        action={<Button onClick={() => void reload()}>{t("pages.files.connection.retry")}</Button>} />}
       <TopBar>
         <Button onClick={toHome} icon={<HomeOutlined />} shape="circle" />
         <Button onClick={up} icon={<UpOutlined />} shape="circle" />

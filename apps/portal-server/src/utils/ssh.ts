@@ -104,8 +104,10 @@ export async function sshConnect<T>(
     }
 
     if (e instanceof SftpError) {
+      const sftpCode = (e.cause as { code?: number } | undefined)?.code;
       throw new ServiceError({
-        code: status.UNKNOWN,
+        code: sftpCode === 3 ? status.PERMISSION_DENIED
+          : sftpCode === 2 ? status.INVALID_ARGUMENT : status.UNKNOWN,
         details: e.message,
         message: e.message,
         metadata: scowErrorMetadata(SFTP_ERROR_CODE),

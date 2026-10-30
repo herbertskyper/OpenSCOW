@@ -543,6 +543,18 @@ export default {
       pageTitle: "Desktop on Login Node",
     },
     files: {
+      connection: {
+        loading: "Connecting to the login node and reading your home directory…",
+        failed: "The cluster file service is temporarily unavailable",
+        help: "Cluster: {}. Check that compute onboarding is complete, then reconnect. "
+          + "If it still fails, give the reference ID to an administrator.",
+        reference: "Reference ID: {}",
+        retry: "Reconnect",
+        onboarding: "Check compute onboarding",
+        directoryFailed: "Could not read this directory. Retry or check the login node connection.",
+        denied: "You do not have permission to access this directory. Return to your home directory.",
+        missing: "This directory does not exist. It may have been moved or deleted.",
+      },
       path: {
         subTitle: "The requested cluster does not exist",
         title: "Files",

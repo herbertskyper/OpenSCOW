@@ -12,9 +12,10 @@
 
 import { typeboxRouteSchema } from "@ddadaal/next-typed-api-routes-runtime";
 import { asyncUnaryCall } from "@ddadaal/tsgrpc-client";
-import { status } from "@grpc/grpc-js";
+import { Metadata, status } from "@grpc/grpc-js";
 import { FileServiceClient } from "@scow/protos/build/portal/file";
 import { Type } from "@sinclair/typebox";
+import { randomUUID } from "crypto";
 import { authenticate } from "src/auth/server";
 import { getClient } from "src/utils/client";
 import { route } from "src/utils/route";
@@ -30,6 +31,7 @@ export const GetHomeDirectorySchema = typeboxRouteSchema({
   responses: {
     200: Type.Object({ path: Type.String() }),
     400: Type.Object({ code: Type.Literal("INVALID_CLUSTER") }),
+    503: Type.Object({ code: Type.Literal("FILE_SERVICE_UNAVAILABLE"), requestId: Type.String() }),
   },
 });
 
@@ -44,12 +46,22 @@ export default route(GetHomeDirectorySchema, async (req, res) => {
   const { cluster } = req.query;
 
   const client = getClient(FileServiceClient);
+  const unavailable = (error: Error) => {
+    const requestId = randomUUID();
+    console.error("File service unavailable", { requestId, cluster, userId: info.identityId, error });
+    return { 503: { code: "FILE_SERVICE_UNAVAILABLE", requestId } } as const;
+  };
 
   return asyncUnaryCall(client, "getHomeDirectory", {
     cluster, userId: info.identityId,
-  }).then(({ path }) => ({ 200: { path } }), handlegRPCError({
-    [status.NOT_FOUND]: () => ({ 400: { code: "INVALID_CLUSTER" as const } }),
-  }));
+  }, { metadata: new Metadata(), options: { deadline: Date.now() + 45000 } })
+    .then(({ path }) => ({ 200: { path } }), handlegRPCError({
+      [status.NOT_FOUND]: () => ({ 400: { code: "INVALID_CLUSTER" as const } }),
+      [status.INTERNAL]: unavailable,
+      [status.UNKNOWN]: unavailable,
+      [status.UNAVAILABLE]: unavailable,
+      [status.DEADLINE_EXCEEDED]: unavailable,
+    }));
 
 
 });

@@ -543,6 +543,17 @@ export default {
       pageTitle: "登录节点上的桌面",
     },
     files: {
+      connection: {
+        loading: "正在连接登录节点并读取个人目录，请稍候…",
+        failed: "暂时无法连接集群文件服务",
+        help: "集群：{}。请确认计算开户已完成，然后重新连接；如仍失败，请向管理员提供诊断编号。",
+        reference: "诊断编号：{}",
+        retry: "重新连接",
+        onboarding: "查看计算开户状态",
+        directoryFailed: "目录读取失败，请重试或检查登录节点连接。",
+        denied: "没有权限访问此目录，请返回个人目录。",
+        missing: "此目录不存在，可能已被移动或删除。",
+      },
       path: {
         subTitle: "您所请求的集群不存在",
         title: "文件管理",
