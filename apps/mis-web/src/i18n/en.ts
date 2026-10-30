@@ -875,13 +875,13 @@ export default {
           unableDetermineUserExistAuth: "Unable to determine if the user exists in the authentication system",
           userExistAuthMessage: "The user already exists in the authentication system. The password you enter "
           + "here will not be effective, and the new user's password will be the current password of the "
-          + "existing user in the authentication system. Click 'Confirm' to add this user directly to the SCOW "
+          + "existing user in the authentication system. Click 'Confirm' to add this user directly to the HITPER "
           + "database.",
           userNotExistAuthMessage: "Click 'Confirm' to create this user in both the HITPER  and the "
           + "authentication system.",
           userExistInSCOWDatabaseMessage: "This user already exists in the HITPER",
           userExistAndAddToSCOWDatabaseMessage: "This user already exists in the authentication system "
-          + "and has been successfully added to the SCOW",
+          + "and has been successfully added to the HITPER",
           createUserFail: "Failed to create user",
           addCompleted: "Added Successfully!",
           crateUser: "Create User",
@@ -988,7 +988,7 @@ export default {
           + "The new user's password will be the current password of the existing user in the authentication system.",
           existInSCOWDatabase: "This {} already exists in the HITPER database",
           createTenantSuccessMessage: "Tenant created successfully, and the admin user exists in the authentication "
-          + "system and has been successfully added to the SCOW database",
+          + "system and has been successfully added to the HITPER database",
           addCompleted: "Added Successfully!",
           createTenantFailMessage: "Failed to create tenant",
           createTenant: "Create Tenant",
