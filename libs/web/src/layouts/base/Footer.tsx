@@ -38,7 +38,7 @@ export const Footer: React.FC<Props> = ({ text, versionTag }) => {
       <FooterContainer>
         <span>Powered by&nbsp;
           <a href="https://github.com/PKUHPC/OpenSCOW" target="_blank">
-            OpenSCOW
+            HITPER
           </a>
           &nbsp;
           <a href={versionTagLink} target="_blank">

@@ -145,7 +145,7 @@ export default {
     },
   },
 
-  footer: "Powered by OpenSCOW",
+  footer: "Powered by HITPER",
 
   runningJob: {
     title: "本用户未结束的作业",
@@ -157,7 +157,7 @@ export default {
         statistic: "平台数据统计",
       },
       navLinkTextPortal: "超算平台",
-      navLinkTextAI: "SCOW AI",
+      navLinkTextAI: "HITPER AI",
       dashboard: "仪表盘",
       user: {
         firstNav: "用户空间",
@@ -330,9 +330,9 @@ export default {
         incorrectFormat:"数据格式不正确",
         importSuccess:"导入成功",
         selectCluster:"选择集群，以账户为单位导入到默认租户中",
-        alreadyExist:"账户已经存在于SCOW中",
-        notExist:"账户不存在于SCOW中，将会导入SCOW",
-        partNotExist:"账户中部分用户不存在于SCOW中，将会导入新的用户",
+        alreadyExist:"账户已经存在于HITPER中",
+        notExist:"账户不存在于HITPER中，将会导入HITPER",
+        partNotExist:"账户中部分用户不存在于HITPER中，将会导入新的用户",
         selectOwner:"请选择一个拥有者",
         importStatus:"导入状态",
         alreadyImport:"已导入",
@@ -411,7 +411,7 @@ export default {
     init:{
       initAdminForm:{
         alreadyExist:"用户已存在",
-        cannotAdd:"用户已存在于SCOW数据库，无法再添加此用户",
+        cannotAdd:"用户已存在于HITPER数据库，无法再添加此用户",
         notExist:"用户不存在于认证系统",
         confirm:"用户不存在，请确认用户ID是否正确",
         existText:"用户已经在认证系统中存在，您此处输入的密码将会不起作用，新用户的密码将是认证系统中的已有用户的当前密码。确认添加为初始管理员？",
@@ -429,9 +429,9 @@ export default {
 
 
         addFail:"添加失败",
-        userExist:"此用户存在于scow数据库",
+        userExist:"此用户存在于HITPER数据库",
         addSuccess:"添加成功",
-        addDb:"此用户存在于认证系统中，已成功添加到SCOW数据库",
+        addDb:"此用户存在于认证系统中，已成功添加到HITPER数据库",
         addFinish:"添加完成！",
         createFail:"创建用户失败",
         initAdmin:"您可以在此创建初始管理员用户。",
@@ -451,7 +451,7 @@ export default {
         importUser:"您可以在此导入已有用户。 查看",
         document:"此文档",
         learn:"了解系统用户模型以及如何导入用户信息。",
-        useMore:"如果您使用SCOW管理多个集群，SCOW系统要求多个集群具有完全相同的用户账户信息，您只需要从一个集群中导入已有用户信息即可。",
+        useMore:"如果您使用HITPER管理多个集群，HITPER系统要求多个集群具有完全相同的用户账户信息，您只需要从一个集群中导入已有用户信息即可。",
 
 
       },
@@ -869,18 +869,18 @@ export default {
         },
         create: {
           userExist: "用户已存在",
-          userExistMessage: "用户已存在于SCOW数据库，无法再添加此用户",
+          userExistMessage: "用户已存在于HITPER数据库，无法再添加此用户",
           userExistAuth: "用户已存在于认证系统",
           userNotExistAuth: "用户未存在于认证系统",
           unableDetermineUserExistAuth: "无法确定用户是否存在于认证系统",
-          userExistAuthMessage: "用户已经在认证系统中存在，您此处输入的密码将会不起作用，新用户的密码将是认证系统中的已有用户的当前密码。点击“确认”将会将此用户直接添加到SCOW数据库。",
+          userExistAuthMessage: "用户已经在认证系统中存在，您此处输入的密码将会不起作用，新用户的密码将是认证系统中的已有用户的当前密码。点击“确认”将会将此用户直接添加到HITPER数据库。",
 
 
 
-          userNotExistAuthMessage: "点击“确认”将会同时在SCOW数据库和认证系统创建此用户",
+          userNotExistAuthMessage: "点击“确认”将会同时在HITPER数据库和认证系统创建此用户",
 
-          userExistInSCOWDatabaseMessage: "此用户存在于scow数据库",
-          userExistAndAddToSCOWDatabaseMessage: "此用户存在于认证系统中，已成功添加到SCOW数据库",
+          userExistInSCOWDatabaseMessage: "此用户存在于HITPER数据库",
+          userExistAndAddToSCOWDatabaseMessage: "此用户存在于认证系统中，已成功添加到HITPER数据库",
 
           createUserFail: "创建用户失败",
           addCompleted: "添加完成！",
@@ -968,7 +968,7 @@ export default {
       tenants: {
         create: {
           adminExist: "管理员用户已存在",
-          adminExistMessage: "管理员用户已存在于SCOW数据库，无法再添加此用户",
+          adminExistMessage: "管理员用户已存在于HITPER数据库，无法再添加此用户",
           adminNotExistAuth: "管理员用户不存在于认证系统",
           adminNotExistAuthMessage: "管理员用户不存在，请确认管理员用户ID是否正确",
           adminExistAuthMessage: "管理员用户已经在认证系统中存在，您此处输入的密码将会不起作用，新用户的密码将是认证系统中的已有用户的当前密码。确认添加为新建租户管理员？",
@@ -986,8 +986,8 @@ export default {
 
 
 
-          existInSCOWDatabase: "此{}已存在于scow数据库",
-          createTenantSuccessMessage: "租户创建成功，且管理员用户存在于认证系统中，已成功添加到SCOW数据库",
+          existInSCOWDatabase: "此{}已存在于HITPER数据库",
+          createTenantSuccessMessage: "租户创建成功，且管理员用户存在于认证系统中，已成功添加到HITPER数据库",
 
           addCompleted: "添加完成！",
           createTenantFailMessage: "创建租户失败",
@@ -1001,7 +1001,7 @@ export default {
       systemDebug: {
         slurmBlockStatus: {
           syncUserAccountBlockingStatus: "用户账户封锁状态同步",
-          alertInfo: "SCOW会定期向调度器同步SCOW数据库中账户和用户的封锁状态，您可以点击立刻同步执行一次手动同步",
+          alertInfo: "HITPER会定期向调度器同步HITPER数据库中账户和用户的封锁状态，您可以点击立刻同步执行一次手动同步",
           syncAlreadyStarted: "正在进行一次同步。请等待本次同步执行完成后，再重新同步。",
           periodicSyncUserAccountBlockStatusInfo:"周期性同步调度器账户和用户的封锁状态",
           turnedOn: "已开启",
@@ -1020,7 +1020,7 @@ export default {
         },
         fetchJobs: {
           jobInfoSync: "作业信息同步",
-          alertMessage: "SCOW会定时从集群同步作业信息，您可以点击立刻同步执行一次手动同步。",
+          alertMessage: "HITPER会定时从集群同步作业信息，您可以点击立刻同步执行一次手动同步。",
 
           periodicSyncJobInfo: "周期性同步作业信息",
           turnedOn: "已开启",

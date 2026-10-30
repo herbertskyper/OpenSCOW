@@ -145,7 +145,7 @@ export default {
     },
   },
 
-  footer: "Powered by OpenSCOW",
+  footer: "Powered by HITPER",
 
   runningJob: {
     title: "My Running Jobs",
@@ -160,7 +160,7 @@ export default {
       navLinkTextAI: "AI",
       dashboard: "Dashboard",
       user: {
-        firstNav: "My SCOW",
+        firstNav: "My HITPER",
         runningJobs: "Running Jobs",
         finishedJobs: "Completed Jobs",
         clusterPartitions: "Cluster and Partition Information",
@@ -330,9 +330,9 @@ export default {
         incorrectFormat: "Incorrect data format.",
         importSuccess: "Import successful.",
         selectCluster: "Select a cluster to import accounts into the default tenant on a per-account basis.",
-        alreadyExist: "Account already exists in SCOW.",
-        notExist: "Account does not exist in SCOW and will be imported into SCOW.",
-        partNotExist: "Some users in the account do not exist in SCOW and will be imported as new users.",
+        alreadyExist: "Account already exists in HITPER.",
+        notExist: "Account does not exist in HITPER and will be imported into HITPER.",
+        partNotExist: "Some users in the account do not exist in HITPER and will be imported as new users.",
         selectOwner: "Please select an owner.",
         importStatus: "Import Status",
         alreadyImport: "Already imported",
@@ -411,7 +411,7 @@ export default {
     init: {
       initAdminForm: {
         alreadyExist: "User already exists.",
-        cannotAdd: "User already exists in the SCOW and cannot be added again.",
+        cannotAdd: "User already exists in the HITPER and cannot be added again.",
         notExist: "User does not exist in the authentication system.",
         confirm: "User does not exist. Please confirm if the user ID is correct.",
         existText: "The user already exists in the authentication system. The password you enter "
@@ -429,9 +429,9 @@ export default {
         + "Confirmation will directly add the user to the database, and the password you enter "
         + "here will not be used; the new user's password will be the current password in the authentication system. ",
         addFail: "Add failed.",
-        userExist: "This user exists in the SCOW database.",
+        userExist: "This user exists in the HITPER database.",
         addSuccess: "Add successfully.",
-        addDb: "This user exists in the authentication system and has been successfully added to the SCOW database. ",
+        addDb: "This user exists in the authentication system and has been successfully added to the HITPER database. ",
         addFinish: "Add completed!",
         createFail: "Failed to create user.",
         initAdmin: "You can create an initial administrator user here. ",
@@ -451,7 +451,7 @@ export default {
         importUser: "You can import existing users here. See the ",
         document: "document ",
         learn: "to learn about the system user model and how to import user information.",
-        useMore: "If you use SCOW to manage multiple clusters, SCOW system requires that multiple "
+        useMore: "If you use HITPER to manage multiple clusters, HITPER system requires that multiple "
         + "clusters have identical user account information. You only need to import user information "
         + "from one cluster.",
       },
@@ -869,7 +869,7 @@ export default {
         },
         create: {
           userExist: "User Already Exists",
-          userExistMessage: "The user already exists in the SCOW and cannot be added again.",
+          userExistMessage: "The user already exists in the HITPER and cannot be added again.",
           userExistAuth: "User already exists in the authentication system",
           userNotExistAuth: "User does not exist in the authentication system",
           unableDetermineUserExistAuth: "Unable to determine if the user exists in the authentication system",
@@ -877,9 +877,9 @@ export default {
           + "here will not be effective, and the new user's password will be the current password of the "
           + "existing user in the authentication system. Click 'Confirm' to add this user directly to the SCOW "
           + "database.",
-          userNotExistAuthMessage: "Click 'Confirm' to create this user in both the SCOW  and the "
+          userNotExistAuthMessage: "Click 'Confirm' to create this user in both the HITPER  and the "
           + "authentication system.",
-          userExistInSCOWDatabaseMessage: "This user already exists in the SCOW",
+          userExistInSCOWDatabaseMessage: "This user already exists in the HITPER",
           userExistAndAddToSCOWDatabaseMessage: "This user already exists in the authentication system "
           + "and has been successfully added to the SCOW",
           createUserFail: "Failed to create user",
@@ -968,7 +968,7 @@ export default {
       tenants: {
         create: {
           adminExist: "Admin User Already Exists",
-          adminExistMessage: "The admin user already exists in the SCOW database and cannot be added again.",
+          adminExistMessage: "The admin user already exists in the HITPER database and cannot be added again.",
           adminNotExistAuth: "Admin user does not exist in the authentication system",
           adminNotExistAuthMessage: "Admin user does not exist. Please confirm that the admin user ID is correct.",
           adminExistAuthMessage: "The admin user already exists in the authentication system. The password you enter "
@@ -986,7 +986,7 @@ export default {
           + "Please confirm that this user already exists in the authentication system. "
           + "Confirmation will add it directly to the database, and the password you enter here will not be effective. "
           + "The new user's password will be the current password of the existing user in the authentication system.",
-          existInSCOWDatabase: "This {} already exists in the SCOW database",
+          existInSCOWDatabase: "This {} already exists in the HITPER database",
           createTenantSuccessMessage: "Tenant created successfully, and the admin user exists in the authentication "
           + "system and has been successfully added to the SCOW database",
           addCompleted: "Added Successfully!",
@@ -1001,7 +1001,7 @@ export default {
       systemDebug: {
         slurmBlockStatus: {
           syncUserAccountBlockingStatus: "Synchronize User Account Blocking Status",
-          alertInfo: "SCOW will regularly synchronize the blocking status of accounts and users to the scheduler. "
+          alertInfo: "HITPER will regularly synchronize the blocking status of accounts and users to the scheduler. "
           + "You can click Sync Now to perform a manual synchronization.",
           periodicSyncUserAccountBlockStatusInfo: "Periodically Synchronize Scheduler Account And User Blocked Status",
           syncAlreadyStarted:
@@ -1022,7 +1022,7 @@ export default {
         },
         fetchJobs: {
           jobInfoSync: "Job Information Synchronization",
-          alertMessage: "SCOW will periodically synchronize job information from the cluster. "
+          alertMessage: "HITPER will periodically synchronize job information from the cluster. "
           + "You can click 'Sync Now' to manually synchronize immediately.",
           periodicSyncJobInfo: "Periodic Job Info Synchronization",
           turnedOn: "Turned On",
