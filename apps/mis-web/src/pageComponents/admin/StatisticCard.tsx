@@ -56,7 +56,7 @@ export const StatisticCard: React.FC<Props> = ({ title, newAddValue = 0,
             value={newAddValue}
             precision={precision}
             loading={loading}
-            valueStyle={{ color: "#94070A" }}
+            valueStyle={{ color: "var(--ant-primary-color)" }}
           />
         </Space>
       </Container>

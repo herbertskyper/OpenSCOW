@@ -344,7 +344,7 @@ export const PlatformStatisticsPage: NextPage = requireAuth(
             totalValue={statisticInfo?.totalUser}
             loading={statisticInfoLoading}
             icon={UserOutlined}
-            iconColor="#94070A"
+            iconColor="var(--ant-primary-color)"
           />
         </Col>
         <Col flex={4}>
@@ -392,7 +392,7 @@ export const PlatformStatisticsPage: NextPage = requireAuth(
           <Card
             title={(
               <Space align="baseline">
-                <UserOutlined style={{ fontSize: "24px", color: "#94070A" }} />
+                <UserOutlined style={{ fontSize: "24px", color: "var(--ant-primary-color)" }} />
                 <TitleText>{t(p("userCount"))}</TitleText>
               </Space>
             )}
