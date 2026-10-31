@@ -35,12 +35,14 @@ export const Logo: React.FC<Props> = ({ basePath }) => {
 
   const { dark } = useDarkMode();
 
-  const query = new URLSearchParams({ type: "logo", preferDark: dark ? "true" : "false" }).toString();
+  const query = new URLSearchParams({
+    type: "logo", preferDark: dark ? "true" : "false", v: "hitper-1",
+  }).toString();
 
   return (
     <LogoContainer>
       <Link href="/">
-        <img height="40px" alt="logo" src={join(basePath, "/api/logo?" + query.toString())} />
+        <img height="40px" alt="HITPER" src={join(basePath, "/api/logo?" + query)} />
       </Link>
     </LogoContainer>
   );
