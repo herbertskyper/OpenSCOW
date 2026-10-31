@@ -11,8 +11,8 @@
  */
 
 import { asyncDuplexStreamCall } from "@ddadaal/tsgrpc-client";
-import { getPortalConfig } from "@scow/config/build/portal";
 import { getLoginNode } from "@scow/config/build/cluster";
+import { getPortalConfig } from "@scow/config/build/portal";
 import { OperationType } from "@scow/lib-operation-log";
 import { queryToIntOrDefault } from "@scow/lib-web/build/utils/querystring";
 import { ShellResponse, ShellServiceClient } from "@scow/protos/build/portal/shell";
