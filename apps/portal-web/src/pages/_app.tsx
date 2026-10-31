@@ -184,8 +184,9 @@ function MyApp({ Component, pageProps, extra }: Props) {
         <link href={join(publicConfig.BASE_PATH, "/manifest.json")} rel="manifest" id="manifest" />
         <link
           rel="icon"
-          type="image/x-icon"
-          href={join(publicConfig.BASE_PATH, "/api/icon?type=favicon")}
+          type="image/svg+xml"
+          sizes="any"
+          href={join(publicConfig.PUBLIC_PATH, "/assets/favicon-h.svg?v=hitper-h1")}
         ></link>
         <script
           id="__CONFIG__"

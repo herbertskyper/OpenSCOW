@@ -3,23 +3,28 @@
   "name": "HITPER",
   "icons": [
     {
-      "src": "/api/icon?type=favicon",
+      "src": "/__public__/assets/favicon-h.svg?v=hitper-h1",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/api/icon?type=favicon&v=hitper-h1",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "/api/icon?type=192",
+      "src": "/api/icon?type=192&v=hitper-h1",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "/api/icon?type=512",
+      "src": "/api/icon?type=512&v=hitper-h1",
       "type": "image/png",
       "sizes": "512x512"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#94070A",
+  "theme_color": "#356D8C",
   "background_color": "#ffffff"
 }
