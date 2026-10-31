@@ -1,4 +1,12 @@
-# <img src="apps/portal-web/assets/icons/192.png" height="30px" /> OpenSCOW - Super Computing On Web
+# HITPER 云超算平台
+
+本项目（HITPER）基于北京大学高性能计算平台开源的 [OpenSCOW（Super Computing On Web）](https://github.com/PKUHPC/OpenSCOW) 进行二次开发，针对 HITPER 平台定制界面品牌、集群访问控制和部署集成。
+
+感谢 OpenSCOW 团队的开源贡献。本项目保留上游版权声明和 [木兰宽松许可证，第 2 版（MulanPSL-2.0）](http://license.coscl.org.cn/MulanPSL2)。
+
+下方保留上游 OpenSCOW 的项目介绍；其中的演示集群、企业服务和联系方式均属于上游项目。
+
+# 上游项目：OpenSCOW - Super Computing On Web
 
 ![Docs](https://github.com/PKUHPC/OpenSCOW/actions/workflows/docs.yaml/badge.svg)
 ![Build](https://github.com/PKUHPC/OpenSCOW/actions/workflows/test-build-publish.yaml/badge.svg)

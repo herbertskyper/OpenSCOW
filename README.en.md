@@ -1,4 +1,12 @@
-# <img src="apps/portal-web/assets/icons/192.png" height="30px" /> OpenSCOW - Super Computing On Web
+# HITPER Cloud HPC Platform
+
+HITPER is a derivative project based on [OpenSCOW (Super Computing On Web)](https://github.com/PKUHPC/OpenSCOW), an open-source project from Peking University's High Performance Computing Platform. It customizes branding, cluster access controls, and deployment integration for the HITPER platform.
+
+We thank the OpenSCOW team for their contributions. This project retains the upstream copyright notices and [Mulan Permissive Software License, Version 2 (MulanPSL-2.0)](http://license.coscl.org.cn/MulanPSL2).
+
+The original OpenSCOW introduction is preserved below. Its demo cluster, enterprise services, and contact information belong to the upstream project.
+
+# Upstream Project: OpenSCOW - Super Computing On Web
 
 ![Docs](https://github.com/PKUHPC/OpenSCOW/actions/workflows/docs.yaml/badge.svg)
 ![Build](https://github.com/PKUHPC/OpenSCOW/actions/workflows/test-build-publish.yaml/badge.svg)

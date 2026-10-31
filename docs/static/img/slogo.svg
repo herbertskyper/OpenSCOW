@@ -1,0 +1,11 @@
+<svg width="900" height="200" viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .text { fill:#9FB0BA; font-family:Arial, sans-serif; font-weight:700; font-size:120px;}
+    .accent { stroke:#7FC1B2; stroke-width:2; fill:none; opacity:0.8;}
+    .chip { fill:#7FC1B2;}
+    .grid { stroke:#BFD0D8; stroke-width:1;}
+  </style>
+
+  <!-- 文本 -->
+  <text x="150" y="150" class="text">HITPER</text>
+</svg>
