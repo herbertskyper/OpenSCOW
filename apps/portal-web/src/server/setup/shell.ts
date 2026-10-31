@@ -11,6 +11,7 @@
  */
 
 import { asyncDuplexStreamCall } from "@ddadaal/tsgrpc-client";
+import { getPortalConfig } from "@scow/config/build/portal";
 import { getLoginNode } from "@scow/config/build/cluster";
 import { OperationType } from "@scow/lib-operation-log";
 import { queryToIntOrDefault } from "@scow/lib-web/build/utils/querystring";
@@ -207,6 +208,11 @@ export const setupShellServer = (req: NextApiRequest) => {
   (req.socket as any).server.on("upgrade", (request, socket, head) => {
     const url = normalizePathnameWithQuery(request.url);
     if (!url.startsWith(join(publicConfig.BASE_PATH, "/api/shell"))) {
+      return;
+    }
+
+    if (!getPortalConfig().shell) {
+      socket.end("HTTP/1.1 403 Forbidden\r\nConnection: close\r\n\r\n");
       return;
     }
 

@@ -15,6 +15,7 @@ import { plugin } from "@ddadaal/tsgrpc-server";
 import { ServiceError, status } from "@grpc/grpc-js";
 import { ShellServiceServer, ShellServiceService } from "@scow/protos/build/portal/shell";
 import { quote } from "shell-quote";
+import { portalConfig } from "src/config/portal";
 import { checkActivatedClusters } from "src/utils/clusters";
 import { clusterNotFound } from "src/utils/errors";
 import { pipeline } from "src/utils/pipeline";
@@ -24,6 +25,13 @@ export const shellServiceServer = plugin((server) => {
 
   server.addService<ShellServiceServer>(ShellServiceService, {
     shell: async (call) => {
+
+      if (!portalConfig.shell) {
+        throw {
+          code: status.PERMISSION_DENIED,
+          message: "登录节点 Shell 已关闭，请连接已申请的工作空间。",
+        } as ServiceError;
+      }
 
       const firstMessage = await call.readAsync();
 
