@@ -1,80 +1,91 @@
 # HITPER 云超算平台
 
-本项目（HITPER）基于北京大学高性能计算平台开源的 [OpenSCOW（Super Computing On Web）](https://github.com/PKUHPC/OpenSCOW) 进行二次开发，针对 HITPER 平台定制界面品牌、集群访问控制和部署集成。
+HITPER 面向计算用户和平台管理员，提供 Slurm 作业管理、交互式应用、GPU 容器工作空间、Ubuntu 虚拟机、文件管理、账户与用量查询。用户可以通过网页提交计算任务，也可以申请有资源限制的独立工作空间，再通过 SSH 连接开发环境。
 
-感谢 OpenSCOW 团队的开源贡献。本项目保留上游版权声明和 [木兰宽松许可证，第 2 版（MulanPSL-2.0）](http://license.coscl.org.cn/MulanPSL2)。
+[English](./README.en.md) · [使用文档](./docs/docs/info/hitper/index.md) · [快速上手](./docs/docs/info/hitper/quickstart.md)
 
-下方保留上游 OpenSCOW 的项目介绍；其中的演示集群、企业服务和联系方式均属于上游项目。
+## 已支持的功能
 
-# 上游项目：OpenSCOW - Super Computing On Web
+| 功能 | 当前能力 |
+| --- | --- |
+| 自助注册与计算开户 | 注册后即可登录；后台创建计算账户、配置资源策略和个人目录，支持查看进度与失败重试 |
+| Slurm CPU / GPU 作业 | 网页提交、查询和管理作业；按账户、分区、QOS 校验 CPU、GPU、内存和运行时间 |
+| 统一交互式入口 | 门户的“交互式工作空间”汇集已有交互式应用与云工作空间，保留 VSCode、Emacs 的原有应用入口 |
+| PyTorch 工作空间 | PyTorch 2.1.1 / CUDA 12.1 容器，支持独占 GPU；已验证实际 CUDA 张量运算 |
+| Docker 工作空间 | 可选择 Ubuntu 22.04 / CUDA 11.8 或 Alpine 3.20 镜像；前者支持 GPU，后者仅支持 CPU |
+| Ubuntu 虚拟机 | Ubuntu 24.04、独立内核和系统盘、虚拟机内 sudo；当前仅支持 CPU |
+| 独立资源申请 | CPU、GPU、内存分别选择；显示镜像、资源池、GPU 型号与显存、个人额度、使用时长和预计到期时间 |
+| 受限 SSH 访问 | 工作空间独立端口、公钥认证；CPU / 内存受限，GPU 容器仅暴露获分配的设备；普通用户不能直接 SSH 登录集群节点 |
+| 实例生命周期 | 创建、启动、停止、重启、续期、释放、到期回收；持久操作队列、操作阶段和诊断编号 |
+| 持久数据与公钥 | 容器个人目录或虚拟机系统盘在释放后保留，可重新挂载或单独删除；支持保存 SSH 公钥和查看指纹 |
+| 用户与管理员控制台 | 用户查看本人实例、额度、账户和记录；管理系统独立展示全局资源，列表支持服务端分页 |
+| 品牌与监控 | 蓝色主题、HITPER 标识、蓝色 H 标签页图标；Prometheus 指标、Grafana 面板、告警及个人用量采样 |
 
-![Docs](https://github.com/PKUHPC/OpenSCOW/actions/workflows/docs.yaml/badge.svg)
-![Build](https://github.com/PKUHPC/OpenSCOW/actions/workflows/test-build-publish.yaml/badge.svg)
-[![codecov](https://codecov.io/gh/PKUHPC/SCOW/branch/master/graph/badge.svg?token=S9JCB2DXML)](https://codecov.io/gh/PKUHPC/SCOW)
+## 两种使用方式
 
-[English README](./README.en.md)
+| 场景 | 入口 | 资源如何分配 |
+| --- | --- | --- |
+| 提交批处理、运行集群计算、使用已有交互式应用 | 门户作业管理 / 交互式工作空间 | 通过 Slurm 申请，由调度器按分区与 QOS 分配计算节点资源 |
+| 获得持续可连接的开发、调试或训练环境 | 交互式工作空间 → 云工作空间 | 从独立工作空间资源池申请 Docker / KVM 实例，受个人与平台配额约束 |
 
-# 简介
+“我的超算账户”用于准备 Slurm 账户及其权限；开通账户本身不会分配 CPU 或 GPU。云工作空间与 Slurm 作业使用不同的资源申请与生命周期管理流程，工作空间目录也不会自动同步到集群个人目录。
 
-为了解决算力中心在建设和运营中广泛存在的运营管理难、用户使用难、资源融合难等问题，降低集群平台软件的建设、管理、使用门槛，我们推出了算力平台系统SCOW（Super Computing On Web）。SCOW可同时纳管基于不同硬件厂商、不同软件栈建设的包括HPC算力和AI算力在内的各类异构算力资源，向用户和管理员提供便捷完整的算力资源管理和使用功能；也可以接入算力网络，实现算力融合。为算力中心提供了更开放、更便捷、更灵活、更高效的运营管理解决方案。
+## 工作空间模板与规格
 
-SCOW分为开源版的OpenSCOW和[企业版SCOW](https://www.pkuscow.com/enterprise)。
+| 模板 | 环境 | GPU | 持久内容 |
+| --- | --- | --- | --- |
+| PyTorch 2.1.1 | Docker，PyTorch 2.1.1 / CUDA 12.1 | 支持，按整卡分配 | `/home/hitper` |
+| Docker · Ubuntu / CUDA | Docker，Ubuntu 22.04 / CUDA 11.8 | 支持，按整卡分配 | `/home/hitper` |
+| Docker · Alpine | Docker，Alpine 3.20 | 不支持 | `/home/hitper` |
+| Ubuntu 虚拟机 24.04 | QEMU / KVM，Ubuntu 24.04 | 暂不支持 GPU 直通 | 完整系统盘 |
 
-OpenSCOW亮点包括：
+当前部署可选 CPU 为 1 / 2 / 4 / 8 核，内存为 2 / 4 / 8 / 16 GiB，新模板数据盘为 50 GiB，首次申请时长为 1–24 小时。实际可选项以镜像状态、个人剩余额度与服务端校验为准；单用户默认最多 1 张 GPU。
 
-- 图形化界面，使用方便
-- 功能丰富，管理便捷
-- 标准化平台，支持算力融合
-- AI+HPC，超智算融合
-- 快速部署，开箱即用。
+停止实例仍保留计算额度，到期时间继续计算；释放或到期回收成功后才归还计算资源。持久数据卷继续占用磁盘额度，只有单独删除数据卷才归还对应磁盘额度。工作空间用量目前不从 Slurm 账户余额扣费，也不作为收费账单。
 
+## 从哪里开始
 
+1. 打开平台登录页，注册或使用现有账号登录。
+2. 在“交互式工作空间 → 云工作空间”查看计算开户进度。
+3. 需要批处理计算时，通过作业管理提交 Slurm 作业；需要独立环境时，选择工作空间模板并配置 CPU、GPU、内存和 SSH 公钥。
+4. 等待实例显示“运行中”，复制页面给出的完整 SSH 命令连接。
+5. 将需要保留的文件放入对应持久目录，使用结束后释放实例。
 
-# 演示集群
+完整步骤见[快速上手](./docs/docs/info/hitper/quickstart.md)和[工作空间使用指南](./docs/docs/info/hitper/workspaces.md)。
 
-我们提供一个完整的使用OpenSCOW管理的slurm超算集群供大家试用，请访问 https://hpc.pku.edu.cn/demo/scow 。
+## 文档导航
 
-用户名和密码信息：
+| 文档 | 内容 |
+| --- | --- |
+| [使用文档索引](./docs/docs/info/hitper/index.md) | 按用户、管理员与部署人员整理阅读顺序 |
+| [快速上手](./docs/docs/info/hitper/quickstart.md) | 注册、登录、计算开户、首次创建与连接 |
+| [工作空间使用](./docs/docs/info/hitper/workspaces.md) | 模板、CPU / GPU / 内存、SSH、数据卷与回收规则 |
+| [Slurm 与交互式应用](./docs/docs/info/hitper/slurm.md) | 作业提交、CPU / GPU 策略、账户与工作空间的区别 |
+| [管理员指南](./docs/docs/info/hitper/administration.md) | 管理入口、权限、资源配额、操作记录和监控 |
+| [部署与维护](./docs/docs/info/hitper/deployment.md) | 源码与部署仓库关系、依赖、构建、配置、备份和更新 |
+| [常见问题](./docs/docs/info/hitper/troubleshooting.md) | GPU、SSH、配额、数据保留、开户及访问故障 |
 
-| 用户类型   | 用户名       | 密码         |
-| ---------- | ------------ | ------------ |
-| 普通用户   | `demo_user`  | `demo_user`  |
-| 管理员用户 | `demo_admin` | `demo_admin` |
+这些文档位于现有文档站的“功能介绍 → HITPER 使用指南”中，也可以直接在仓库中阅读。
 
-访问[文档](https://pkuhpc.github.io/OpenSCOW/docs/info#%E4%BD%93%E9%AA%8C%E7%8E%AF%E5%A2%83)以了解更多关于这个演示集群的信息。
+## 仓库与部署组成
 
+本仓库保存网页与服务端源码、品牌素材和文档。当前注册、云工作空间与运维扩展位于配套部署仓库 [myScowConfig](https://github.com/herbertskyper/myScowConfig) 的 `hitper/` 目录，运行配置位于该仓库的 `config/` 目录。
 
+```text
+OpenSCOW/                 # 当前源码仓库
+├── apps/                 # 门户、管理系统、认证及服务端
+├── libs/                 # 共享组件、配置和协议库
+├── docs/docs/info/hitper/ # HITPER 使用与运维文档
+└── docker/               # 镜像构建支持
 
-# 更多OpenSCOW相关信息
+scow/                     # 配套部署仓库，部署时与 OpenSCOW 相邻
+├── config/               # 集群、认证、界面及策略配置
+├── docker-compose.yml
+└── hitper/               # 注册、工作空间、数据卷、容量与监控扩展
+```
 
-- 教程：我们提供了简单和直观的教程，方便您在最短时间内了解如何使用OpenSCOW、提交超算和智算作业、训练大模型等。请访问：[SCOW Tutorial](https://www.pkuscow.com/tutorial/scow/)
-- 文档：关于项目的更多信息，包括如何部署OpenSCOW，请参考[文档](https://pkuhpc.github.io/OpenSCOW)。
-- 贡献：请参考[贡献指南](https://pkuhpc.github.io/OpenSCOW/docs/contribution)来了解如何参与OpenSCOW的开发。
-- 授权协议：OpenSCOW 使用 [木兰宽松许可证, 第2版](http://license.coscl.org.cn/MulanPSL2) 开源协议。
+只克隆本源码仓库不会自动获得云工作空间扩展和完整部署配置。部署前请阅读[部署与维护](./docs/docs/info/hitper/deployment.md)，按实际网络、集群与硬件修改配置。
 
+## 项目来源与许可
 
-
-# 企业版SCOW
-
-为了满足用户的强烈需求，我们还推出了企业版SCOW。除了包含完整的OpenSCOW功能以外，企业版SCOW提供面向企业级应用场景的scowd性能增强组件，高等级的原厂企业级服务，以及更多可选功能（站内信、消息中心、操作管理、存储管理、资源管理、资源权限管理、论文成果管理、更丰富的账单、优化的文件传输等），同时提供SCOW最佳运营实践，有效助力算力中心快速构建并运营自己的算力资源。
-
-获取更多企业版信息请访问 ：https://www.pkuscow.com/enterprise
-
-如果对企业版SCOW感兴趣，欢迎联系[service@csjstt.com](mailto:service@csjstt.com) 或加入技术交流群（见本文最后）。
-
-
-
-# 其他相关产品
-
-除了OpenSCOW和企业版SCOW，我们还推出了其他相关产品。
-
-- 鹤思（CraneSched）智能调度系统产品：https://github.com/PKUHPC/CraneSched
-- ShadowDesk远程桌面（高性能的远程桌面解决方案）：https://www.pkuscow.com/shadowdesk
-
-
-
-# 欢迎联系SCOW团队
-
-欢迎通过邮件[service@csjstt.com](mailto:service@csjstt.com) 或扫码加入技术交流群（见下面的微信二维码）联系我们。
-
-![SCOW技术交流群二维码](docs/static/img/scow_qrcode.png)
+本项目由 HITPER 项目维护者基于北京大学高性能计算平台开源的 [OpenSCOW（Super Computing On Web）](https://github.com/PKUHPC/OpenSCOW) 二次开发。感谢上游团队的开源贡献；保留原有版权声明，遵循 [MulanPSL-2.0](./LICENSE)。上游通用部署与配置资料保留在本仓库的文档目录中。
